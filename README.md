@@ -1,6 +1,6 @@
-# Warehouse(ombor) Operation Management loyhasi uchun Backend API
+# Warehouse(ombor) Operation Management loyhasi uchun API 🏗 
 
-## Loyhaning maqsadi
+## 🎯Loyhaning maqsadi
 - Asosiy pageda loyhani ishlatish uchun turorial bolishi kk
 - Asosiy pageda yana Warehouse management button bulishi kk
 - Asosiy oynaga sign in ham bo'lishi kk 
@@ -16,7 +16,7 @@
 
 
 
-## Warehouse turlari
+## 🏗 Warehouse turlari
 - Boshida limited warehouses qilmoqchi bo'ldim(masalan: oziq ovqat,qurol-yaroq va elektronik narsalar) ammo nimaga limited istaganicha yaratsin client loyha uchun pul to'laydi xush shunga yarasha warehouse istagan warehouseni yaratsin
 
 
@@ -58,6 +58,3 @@
     - entered
     - taken
 
-5. room
-    - name
-    - volume
