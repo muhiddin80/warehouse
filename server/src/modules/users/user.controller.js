@@ -24,6 +24,7 @@ class userController {
     register = async (req,res,next) => {
         try {
             const {name,email,password} = req.body;
+            password = await hash(password,10);
             const data = await this.#_userService.register(name,email,password);
             const accessToken = jwt.sign(
                 {id:data.data.id},
@@ -68,6 +69,7 @@ class userController {
         try {
             const {email,password} = req.body;
             const data = await this.#_userService.login(email,password);
+            console.log(data)
             const accessToken = jwt.sign(
                 {id:data.data.id},
                 ACCESS_TOKEN_SECRET,
@@ -148,7 +150,7 @@ class userController {
                       <h2 style="color: #333;">Password Reset Request</h2>
                       <p style="color: #555;">Hi there,</p>
                       <p style="color: #555;">We received a request to reset your password. Click the button below to set a new password:</p>
-                      <a href="${server_base_url}/reset-password?token=${user.token}" 
+                      <a href="${server_base_url}/user/resetpassword?token=${user.token}" 
                          style="display: inline-block; margin: 20px 0; padding: 12px 24px; background-color: #007bff; color: #fff; text-decoration: none; border-radius: 5px;">
                         Reset Password
                       </a>

@@ -1,4 +1,5 @@
 import userModel from "./models/user.model.js";
+import { compare } from "bcrypt";
 
 class userService{
     #_userModel;
@@ -32,12 +33,18 @@ class userService{
     }
 
     login = async (email,password) => {
-        const foundedUser = await this.#_userModel.findOne({email,password});
+        const foundedUser = await this.#_userModel.findOne({email});
         if(!foundedUser){
             return {
                 message:"User with this email not found!"
             }
         }
+        
+        const isMatch = await compare(password, foundedUser.password);
+    
+        if(!isMatch){
+            res.render("login",{error:"Invalid password!"})
+        };
         return {
             message:"success",
             data:foundedUser

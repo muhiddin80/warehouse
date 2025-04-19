@@ -26,11 +26,11 @@ userRouter.get("/",
         Protected(true),
         ValidationMiddleware(updateUser),
         userController.updateUser)
-    // .post("/forgotpassword",
-    //     userController.forgotPasswod
-    // )
-    // .post("/resetpassword",
-    //     userController.resetPassword
-    // );
+    .post("/forgotpassword",
+        userController.forgotPasswod
+    )
+    .post("/resetpassword",
+        userController.resetPassword
+    );
 
 export default userRouter;
