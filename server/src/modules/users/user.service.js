@@ -72,8 +72,30 @@ class userService{
         }
     }
 
+    forgotPassword = async (email,token) => {
+        const foundedUser = await this.#_userModel.findOne({email});
+        if(!foundedUser){
+            return {
+                error:"User not found!",
+                status:400
+            }
+        }
+        foundedUser.token = token.toString("hex")
+        await foundedUser.save()
+        return foundedUser;
+    }
 
+    resetPassword = async (passwordHash,token) => {
+        const findUser = await this.#_userModel.findOne({token});
 
+        findUser.password = passwordHash;
+
+        await findUser.save();
+
+        return {
+            message:"Password successfully changed!"
+        }
+    }
 }
 
 export default new userService();

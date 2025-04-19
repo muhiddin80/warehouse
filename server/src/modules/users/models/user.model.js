@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { ROLES } from "../../../constants/roles.constants.js";
 
 const userSchema = new mongoose.Schema(
     {
@@ -16,6 +17,15 @@ const userSchema = new mongoose.Schema(
             type: mongoose.SchemaTypes.String,
             required: true,
             unique: true
+        },
+        role:{
+            type:mongoose.SchemaTypes.String,
+            enum:[ROLES.WORKER,ROLES.VIEWER,ROLES.SUPER_ADMIN,ROLES.OWNER],
+            default: ROLES.VIEWER
+        },
+        token:{
+            type:mongoose.SchemaTypes.String,
+            required:false
         }
     },
     {

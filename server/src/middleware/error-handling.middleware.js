@@ -20,6 +20,6 @@ export const ErrorHandlerMiddleware = (err,_,res,__)=>{
     }
 
     res.status(500).send({
-        message: err,
+        message: err.message,
     })
 };
