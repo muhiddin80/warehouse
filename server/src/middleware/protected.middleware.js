@@ -12,40 +12,40 @@ export const Protected =(isProtected)=> {
 
         const accessToken = req.cookies.accessToken;
         console.log(accessToken)
-        // const refreshToken = req.cookies.refreshToken;
+        const refreshToken = req.cookies.refreshToken;
 
-        // if(!accessToken && !refreshToken){
-        //     return res.status(401).send({
-        //         message:"Unauthorized!"
-        //     })
-        // }
+        if(!accessToken && !refreshToken){
+            return res.status(401).send({
+                message:"Unauthorized!"
+            })
+        }
 
-        // if(!accessToken){
-        //     const data = jwt.verify(refreshToken,REFRESH_TOKEN_SECRET);
+        if(!accessToken){
+            const data = jwt.verify(refreshToken,REFRESH_TOKEN_SECRET);
 
-        //     const newAccessToken = jwt.sign(data,ACCESS_TOKEN_SECRET,{
-        //         expiresIn:+ACCESS_TOKEN_EXPIRE_TIME,
-        //         algorithm:"HS256"
-        //     })
-        //     console.log(15)
+            const newAccessToken = jwt.sign(data,ACCESS_TOKEN_SECRET,{
+                expiresIn:+ACCESS_TOKEN_EXPIRE_TIME,
+                algorithm:"HS256"
+            })
+            console.log(15)
 
-        //     const newRefreshToken = jwt.sign(data,REFRESH_TOKEN_SECRET,{
-        //         expiresIn:+REFRESH_TOKEN_EXPIRE_TIME,
-        //         algorithm:"HS256"
-        //     });
+            const newRefreshToken = jwt.sign(data,REFRESH_TOKEN_SECRET,{
+                expiresIn:+REFRESH_TOKEN_EXPIRE_TIME,
+                algorithm:"HS256"
+            });
 
-        //     res.cookie("accessToken",newAccessToken,{
-        //         maxAge:+ACCESS_TOKEN_EXPIRE_TIME*1000,
-        //     });
+            res.cookie("accessToken",newAccessToken,{
+                maxAge:+ACCESS_TOKEN_EXPIRE_TIME*1000,
+            });
 
-        //     res.cookie("refreshToken",newRefreshToken,{
-        //         maxAge:+REFRESH_TOKEN_EXPIRE_TIME*1000,
-        //     });
+            res.cookie("refreshToken",newRefreshToken,{
+                maxAge:+REFRESH_TOKEN_EXPIRE_TIME*1000,
+            });
 
-        //     return res.status(200).send({
-        //         message:"success",
-        //     });
-        // }
+            return res.status(200).send({
+                message:"success",
+            });
+        }
         try {
             const decodedData = jwt.verify(accessToken, ACCESS_TOKEN_SECRET)
       
