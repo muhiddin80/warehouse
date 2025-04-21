@@ -8,16 +8,21 @@ const CategorySchema = new mongoose.Schema(
         },
         goods:[
             {
-                type:mongoose.SchemaTypes.ObjectId
+                type:mongoose.SchemaTypes.ObjectId,
+                ref:"Goods"
             },
         ],
         shelve:{
             type:mongoose.SchemaTypes.String,
             required:true
+        },
+        warehouse:{
+            type:mongoose.SchemaTypes.ObjectId,
+            ref:"Warehouse"
         }
     },
     {
-        collection:"category",
+        collection:"Category",
         timestamps:true,
         versionKey:false
     })

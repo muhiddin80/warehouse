@@ -11,65 +11,59 @@ class userService{
     getAllUsers = async ()=>{
         const users = await this.#_userModel.find();
 
-        return {
-            message:"success",
-            count:users.length,
-            data:users
-        };
+        return users
     }
 
     register = async (name,email,password) => {
         const foundedUser = await this.#_userModel.findOne({email});
         if(foundedUser){
             return {
-                message:"User with this email or name is already exists!"
+                error:"User with this email or name is already exists!",
+                status:400
             }
         }
         const result = await this.#_userModel.create({name,email,password})
-        return {
-            message:"successfully created",
-            data:result
-        };
+        return result
     }
 
     login = async (email,password) => {
         const foundedUser = await this.#_userModel.findOne({email});
         if(!foundedUser){
             return {
-                message:"User with this email not found!"
+                error:"User with this email not found!",
+                status:404
             }
         }
         
         const isMatch = await compare(password, foundedUser.password);
     
         if(!isMatch){
-            res.render("login",{error:"Invalid password!"})
+            return {
+                error:"Invalid password!",
+                status:400
+            }
         };
-        return {
-            message:"success",
-            data:foundedUser
-        }
+        return foundedUser;
     }
 
     updatedUser =  async (email,password,name,id) => {
         const foundedUser = await this.#_userModel.findById(id);
         if(!foundedUser){
             return {
-                message:"User with this email not found!"
+                error:"User with this email not found!",
+                status:404
             }
         }
         const updatedUser = await this.#_userModel.findByIdAndUpdate(id,{name,password},{new:true});
-        return {
-            message:"successfully updated",
-            data:updatedUser,
-        }
+        return updatedUser
     }
 
     deleteUser = async (id) => {
         const foundedUser = await this.#_userModel.findById(id);
         if(!foundedUser){
             return {
-                message:"User with this email not found!"
+                error:"User with this email not found!",
+                status:404
             }
         }
 

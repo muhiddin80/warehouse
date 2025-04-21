@@ -5,6 +5,7 @@ import userService from "./user.service.js"
 import jwt from "jsonwebtoken"
 import crypto from "node:crypto"
 import {hash} from "bcrypt"
+import { isValidObjectId } from "mongoose"
 
 class userController {
     #_userService
@@ -15,7 +16,11 @@ class userController {
         try {
             const data = await this.#_userService.getAllUsers();
             console.log(data)
-            res.send(data);
+            res.status(200).send(
+                {
+                    message:"success",
+                    data:data
+                });
         } catch (error) {
             next(error);
         }
@@ -24,10 +29,14 @@ class userController {
     register = async (req,res,next) => {
         try {
             const {name,email,password} = req.body;
-            password = await hash(password,10);
-            const data = await this.#_userService.register(name,email,password);
+            const hashPassword = await hash(password,10)
+            const data = await this.#_userService.register(name,email,hashPassword);
+            if(data.error){
+                throw new BaseException(data.error,data.status);
+            }
+            console.log(data)
             const accessToken = jwt.sign(
-                {id:data.data.id},
+                {id:data.id,role:data.role},
                 ACCESS_TOKEN_SECRET,
                 {
                     expiresIn:ACCESS_TOKEN_EXPIRE_TIME,
@@ -36,7 +45,7 @@ class userController {
             );
 
             const refreshToken = jwt.sign(
-                {id:data.data.id},
+                {id:data.id,role:data.role},
                 REFRESH_TOKEN_SECRET,
                 {
                     expiresIn:REFRESH_TOKEN_EXPIRE_TIME,
@@ -44,7 +53,7 @@ class userController {
                 }
             );
             res.cookie("accessToken", accessToken, {
-                maxAge: 60 * 1000,
+                maxAge: 60 * 100000,
                 httpOnly: true,
               });
           
@@ -52,14 +61,16 @@ class userController {
                 maxAge: 2 * 60 * 1000,
                 httpOnly: true,
               });
-            data.accessToken = accessToken
-            data.refreshToken= refreshToken;
             await sendMail({
                 to:email,
                 subject:"Welcome",
-                text:`Hello ${data.data.name}.We are happy to have you in our project! If you need help you can connect us in thi number {+998996544055}`
+                text:`Hello ${data.name}.We are happy to have you in our project! If you need help you can connect us in thi number {+998996544055}`
             })
-            res.send(data)
+            res.status(200).send({
+                message:"User successfully registered!",
+                data:data,
+                accessToken:accessToken
+            })
         } catch (error) {
             next(error);
         }
@@ -69,9 +80,11 @@ class userController {
         try {
             const {email,password} = req.body;
             const data = await this.#_userService.login(email,password);
-            console.log(data)
+            if(data.error){
+                throw new BaseException(data.error,data.status);
+            }
             const accessToken = jwt.sign(
-                {id:data.data.id},
+                {id:data.id,role:data.role},
                 ACCESS_TOKEN_SECRET,
                 {
                     expiresIn:ACCESS_TOKEN_EXPIRE_TIME,
@@ -80,7 +93,7 @@ class userController {
             );
 
             const refreshToken = jwt.sign(
-                {id:data.data.id},
+                {id:data.id,role:data.role},
                 REFRESH_TOKEN_SECRET,
                 {
                     expiresIn:REFRESH_TOKEN_EXPIRE_TIME,
@@ -99,7 +112,11 @@ class userController {
 
             data.accessToken = accessToken
             data.refreshToken= refreshToken;
-            res.send(data)
+            res.status(200).send({
+                message:"Successfully logged in!",
+                data:data,
+                accessToken:accessToken
+            })
         } catch (error) {
             next(error)
         }
@@ -109,9 +126,19 @@ class userController {
         try {
             const {name,email,password} = req.body;
             const id = req.params.id;
+            
+            if (!(isValidObjectId(id))) {
+                throw new BaseException(`given id: ${id} is not valid`,400)
+            }
 
             const data = await this.#_userService.updatedUser(email,password,name,id);
-            res.send(data)
+            if(data.error){
+                throw new BaseException(data.error,data.status);
+            }
+            res.status(200).send({
+                message:"User successfully updated!",
+                data:data
+            })
         } catch (error) {
             next(error)
         }
@@ -120,9 +147,18 @@ class userController {
     deleteUser = async (req,res,next) => {
         try {
             const id = req.params.id;
+            
+            if (!(isValidObjectId(id))) {
+                throw new BaseException(`given id: ${id} is not valid`,400)
+            }
 
             const data = await this.#_userService.deleteUser(id);
-            res.send(data)
+            if(data.error){
+                throw new BaseException(data.error,data.status);
+            }
+            res.status(200).send({
+                message:"User successfully deleted!"
+            });
         } catch (error) {
             next(error)
         };

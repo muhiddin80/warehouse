@@ -1,3 +1,4 @@
+import categoryModel from "../category/models/category.model.js";
 import goodsModel from "./models/goods.model.js"
 
 
@@ -7,25 +8,41 @@ class GoodsService{
         this.#_goodsModel= goodsModel
     }
 
-    getAllGoods = async () => {
-        const goods = await this.#_goodsModel.find();
-        return {
-            message:"success",
-            count:goods.length,
-            data:goods
-        }
+    getAllGoods = async (limit,page,orderSort,orderField,query) => {
+        const goods = await this.#_goodsModel.find(query)
+            .sort({ [orderField]: Number(orderSort) })
+            .skip((page - 1) * limit)
+            .limit(Number(limit));
+    
+        return goods
     }
 
     createGood = async (name,imageUrl,category,location,volume,volume_type) => {
-        const createGood = await this.#_goodsModel.create({name,imageUrl,category,location,volume,volume_type});
-        return {
-            message:"success",
-            data:createGood
-        }
+        const createGood = await this.#_goodsModel.create({name,imageUrl,category,location,volume,volume_type,entered:volume,taken:0});
+        await categoryModel.findByIdAndUpdate(
+            category, 
+            { $push: { goods: createGood._id } },
+            { new: true }
+          );
+        return createGood
     }
 
     updateGood = async (id,name,imageUrl,category,location,volume,volume_type) => {
-        const updatedGood = await this.#_goodsModel.findByIdAndUpdate(id,{name,imageUrl,category,location,volume,volume_type},{new:true})
+        const good = await this.#_goodsModel.findById(id)
+        if(!good){
+            return {
+                error:"Good not found!",
+                status:404
+            }
+        }
+        let taken = 0;
+        let entered = 0;
+        if(good.volume>volume){
+            taken = good.volume - volume
+        }else{
+            entered = volume - good.volume;
+        };
+        const updatedGood = await this.#_goodsModel.findByIdAndUpdate(id,{name,imageUrl,category,location,volume,volume_type,entered:good.entered+entered,taken:good.taken+taken},{new:true})
 
         return {
             message:"success",
@@ -34,11 +51,11 @@ class GoodsService{
     }
 
     deleteGood = async (id) => {
-        const deletedGood = await this.#_goodsModel.findByIdAndDelete(id);
-
+        const good = await this.#_goodsModel.findByIdAndDelete(id);
+    
         return {
             message:"success",
-            data:deletedGood
+            data:good
         }
     }
 }

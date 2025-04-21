@@ -10,53 +10,42 @@ class WarehouseSchema{
     getAllWarehouses = async () => {
         const warehouses = await this.#_warehouseModel.find();
 
-        return{
-            message:"success",
-            count:warehouses.length,
-            data:warehouses
-        };
+        return warehouses;
     };
 
     getWarehouse = async (id) => {
         const warehouse = await this.#_warehouseModel.findById(id);
 
-        return {
-            message: "success",
-            data:warehouse
-        }
+        return warehouse;
     };
 
-    createWarehouse = async (name,type,owner) => {
+    createWarehouse = async (name,type,owner,category) => {
         const foundedWarehouse = await this.#_warehouseModel.findOne({name});
 
         if(foundedWarehouse){
             return {
-                message:"This name is already exists!"
+                error:"This name is already exists!",
+                status:400
             }
         }
 
-        const warehouse = await this.#_warehouseModel.create({name,type,owner});
-        return {
-            message:"successfully created",
-            data:warehouse,
-        }
+        const warehouse = await this.#_warehouseModel.create({name,type,owner,category});
+        return warehouse;
 
     };
 
-    updateWarehouse = async (id,name,type,owner) => {
+    updateWarehouse = async (id,name,type,owner,category) => {
         const foundedWarehouse = await this.#_warehouseModel.findOne({name})
         
         if(!foundedWarehouse){
             return {
-                message:"Warehouse not found!"
+                error:"Warehouse not found!",
+                staus:404
             }
         };
 
-        const warehouse = await this.#_warehouseModel.findByIdAndUpdate(id,{name,type,owner},{new:true});
-        return {
-            message:"successfully updated",
-            data:warehouse
-        }
+        const warehouse = await this.#_warehouseModel.findByIdAndUpdate(id,{name,type,owner,category},{new:true});
+        return warehouse
     };
 
     deleteWarehouse = async (id) => {
@@ -64,14 +53,13 @@ class WarehouseSchema{
         
         if(!foundedWarehouse){
             return {
-                message:"Warehouse not found!"
+                error:"Warehouse not found!",
+                status:404
             }
         }
 
         await this.#_warehouseModel.findByIdAndDelete(id)
-        return {
-            message:"successfully deleted",
-        }
+        return ;
     };
 };
 

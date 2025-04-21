@@ -3,7 +3,7 @@ import Joi from "joi"
 
 export const goodsSchema = Joi.object({
     name: Joi.string().required(),
-    imageUrl: Joi.string().required(),
+    imageUrl: Joi.string(),
     category: Joi.string().required(),
     location: Joi.string().required(),
     volume: Joi.number().required(),

@@ -1,4 +1,5 @@
 import categoryModel from "./models/category.model.js";
+import "../goods/models/goods.model.js";
 
 class categoryService{
     #_categoryModel
@@ -7,31 +8,22 @@ class categoryService{
     };
 
     getAllCategory = async () => {
-        const categories = await this.#_categoryModel.find();
+        const categories = await this.#_categoryModel.find()
+            .populate("goods")
 
-        return {
-            message:"success",
-            count: categories.length,
-            data:categories
-        }
+        return categories;
     }
 
     getCategory = async (id) => {
         const category = await this.#_categoryModel.findById(id);
 
-        return {
-            message:"success",
-            data:category,
-        }
+        return category;
     }
 
     createCategory = async (name,shelve) => {
         const category = await this.#_categoryModel.create({name,shelve});
 
-        return {
-            message:"created successfully",
-            data:category
-        }
+        return category;
     }
 
     updateCategory = async (id,name,shelve) => {
@@ -39,16 +31,14 @@ class categoryService{
 
         if(!foundedCategory){
             return {
-                message:"Category not found!"
+                error:"Category not found!",
+                status:404
             }
         }
 
         const category = await this.#_categoryModel.findByIdAndUpdate(id,{name,shelve},{new:true})
 
-        return {
-            message:"Successfully updated!",
-            data:category
-        }
+        return category
     }
 
     deleteCategory = async (id) => {
@@ -56,16 +46,14 @@ class categoryService{
         
         if(!foundedCategory){
             return {
-                message:"Category not found!"
+                error:"Category not found!",
+                status:404
             }
         }
 
         const deletedCategory = await this.#_categoryModel.findByIdAndDelete(id);
 
-        return {
-            message:"Successfully deleted!",
-            data:deletedCategory,
-        }
+        return deletedCategory;
     }
 }
 

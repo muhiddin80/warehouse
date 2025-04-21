@@ -1,0 +1,6 @@
+{"isException":true,"level":"error","status":400,"timestamp":"2025-04-21 12:43"}
+{"isException":true,"level":"error","status":400,"timestamp":"2025-04-21 14:18"}
+{"isException":true,"level":"error","status":403,"timestamp":"2025-04-21 14:19"}
+{"code":"ENOENT","errno":-4058,"level":"error","path":"C:\\Users\\CPU_20240930\\Desktop\\ammunation warehouse\\server\\uploads\\image-1745227177707.jpeg","storageErrors":[],"syscall":"open","timestamp":"2025-04-21 14:19"}
+{"isException":true,"level":"error","status":400,"timestamp":"2025-04-21 14:21"}
+{"isException":true,"level":"error","status":400,"timestamp":"2025-04-21 14:44"}

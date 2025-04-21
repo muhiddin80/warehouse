@@ -1,3 +1,5 @@
+import logger from "../config/winston.config.js";
+
 function duplicateFieldError(err){
     if(err?.code === 11000){
         err.status = 409;
@@ -11,6 +13,8 @@ function duplicateFieldError(err){
 }
 
 export const ErrorHandlerMiddleware = (err,_,res,__)=>{
+    logger.error(err)
+
     err = duplicateFieldError(err);
 
     if(err.isException){
@@ -18,8 +22,10 @@ export const ErrorHandlerMiddleware = (err,_,res,__)=>{
             message: err.message,
         })
     }
+    console.log(err)
 
     res.status(500).send({
         message: err.message,
+        details:err
     })
 };

@@ -1,4 +1,4 @@
-import mongoose, { Collection } from "mongoose";
+import mongoose from "mongoose";
 
 
 const WarehouseSchema = new mongoose.Schema(
@@ -14,7 +14,13 @@ const WarehouseSchema = new mongoose.Schema(
         owner:{
             type: mongoose.SchemaTypes.ObjectId,
             ref:"users"
-        }
+        },
+        category:[
+            {
+                type:mongoose.SchemaTypes.ObjectId,
+                ref:"Category"
+            }
+        ]
     },
     {
         collection:"Warehouse",

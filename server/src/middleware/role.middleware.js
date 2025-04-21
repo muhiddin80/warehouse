@@ -1,4 +1,4 @@
-import { ROLES } from "../constants/role.constant.js";
+import { ROLES } from "../constants/roles.constants.js";
 import { BaseException } from "../exception/base.exception.js";
 
 export const  Roles = (...roles)=>{
@@ -11,7 +11,6 @@ export const  Roles = (...roles)=>{
         if(!roles.includes(userRole)){
             return next(new BaseException("This action is forbidden for you!",403))
         }
-
         next();
     }
 }

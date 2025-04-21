@@ -10,22 +10,22 @@ const GoodsSchema = new mongoose.Schema(
             type:mongoose.SchemaTypes.String,
             required:false
         },
-        category:{
-            type:mongoose.SchemaTypes.ObjectId,
-            required:true
-        },
         location:{
             type:mongoose.SchemaTypes.String,
-            required
+            required:true
         },
         volume:{
             type:mongoose.SchemaTypes.Number,
-            required
+            required:true
         },
         volume_type:{
             type:mongoose.SchemaTypes.String,
             enum:["kg","number"],
             default:"number"
+        },
+        category:{
+            type:mongoose.SchemaTypes.ObjectId,
+            ref:"Category"
         },
         entered:{
             type:mongoose.SchemaTypes.Number,
@@ -41,4 +41,4 @@ const GoodsSchema = new mongoose.Schema(
     }
 )
 
-export default mongoose.model("Good",GoodsSchema);
+export default mongoose.model("Goods",GoodsSchema);
